@@ -1,0 +1,4 @@
+*.env
+*.pyc
+.conda
+__pycache__
