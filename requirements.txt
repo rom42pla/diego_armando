@@ -2,3 +2,4 @@ python-dotenv
 aiogram
 motor
 pydantic
+pymongo

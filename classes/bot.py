@@ -1,3 +1,4 @@
+from pymongo.server_api import ServerApi
 import asyncio
 import logging
 import sys
@@ -10,30 +11,35 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.fsm.storage.memory import MongoStorage
+# from aiogram.fsm.storage.memory import MongoStorage
 
 from aiogram.types import CallbackQuery
-from aiogram_dialog import DialogManager, Window
-from aiogram_dialog.widgets.kbd import Calendar
-from aiogram_dialog.widgets.kbd import Button
-from aiogram_dialog.widgets.text import Const
+# from aiogram_dialog import DialogManager, Window
+# from aiogram_dialog.widgets.kbd import Calendar
+# from aiogram_dialog.widgets.kbd import Button
+# from aiogram_dialog.widgets.text import Const
 from aiogram.filters.state import State, StatesGroup
-from aiogram_dialog import setup_dialogs
+# from aiogram_dialog import setup_dialogs
 
 class TelegramBot:
 
-    def __init__(self, telegram_api_token, mongodb_api_token):
-        storage = MongoStorage.from_url(f"mongodb://rom42pla:{mongodb_api_token}@data.skifgiq.mongodb.net/?")
-        self.dp = Dispatcher(storage=storage)
+    def __init__(self, telegram_api_token, mongodb_api_username, mongodb_api_password):
+        from pymongo.mongo_client import MongoClient
+
+        uri = f"mongodb+srv://f{mongodb_api_username}:{mongodb_api_password}@data.skifgiq.mongodb.net/?retryWrites=true&w=majority&appName=data"
+        # Create a new client and connect to the server
+        client = MongoClient(uri, server_api=ServerApi('1'))
+        self.dp = Dispatcher()
         self.bot = Bot(token=telegram_api_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
         @self.dp.message(Command("start"))
         async def command_start_handler(message: Message) -> None:
-            async def on_date_selected(callback: CallbackQuery, widget, manager: DialogManager, selected_date: date):
-                await callback.answer(str(selected_date))
+            pass
+            # async def on_date_selected(callback: CallbackQuery, widget, manager: DialogManager, selected_date: date):
+            #     await callback.answer(str(selected_date))
 
-            calendar = Calendar(id='calendar', on_click=on_date_selected)
-            await message.answer(f"Hello, {html.bold(message.from_user.full_name)}!", reply_markup=calendar)
+            # calendar = Calendar(id='calendar', on_click=on_date_selected)
+            # await message.answer(f"Hello, {html.bold(message.from_user.full_name)}!", reply_markup=calendar)
 
 
         @self.dp.message()
